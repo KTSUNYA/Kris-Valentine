@@ -67,7 +67,7 @@ function displayCatHeart() {
     // Set the source (file path) for the cat-heart image
     catHeartImage.src = 'kuromi-love.gif'; // Assuming the cat-heart image is named "kuromi-love.gif"
     // Set alternative text for the image (for accessibility)
-    catHeartImage.alt = 'Cat Heart';
+    catHeartImage.alt = 'Kuromi Love';
     // When the cat-heart image is fully loaded, add it to the image container
     catHeartImage.onload = function() {
         imageContainer.appendChild(catHeartImage);
@@ -78,3 +78,4 @@ function displayCatHeart() {
 
 // Display the kuromi-crying.gif initially
 displayCat();
+

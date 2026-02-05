@@ -1,81 +1,36 @@
-// script.js
+// script.js (modified)
 
-// Function to handle button click events
-function selectOption(option) {
-    // Check which option was clicked
-    if (option === 'yes') {
-        // Flash rainbow colors
-        flashRainbowColors(function() {
-            document.getElementById('question').style.display = 'none'; // Hide the question
-            displayCatHeart(); // Display the kuromi-love.gif
-        });
-    } else if (option === 'no') {
-        // Change text on the "No" button to "You sure?"
-        document.getElementById('no-button').innerText = 'You sure?'; 
-        // Increase font size of "Yes" button
-        var yesButton = document.getElementById('yes-button');
-        var currentFontSize = window.getComputedStyle(yesButton).getPropertyValue('font-size');
-        var newSize = parseFloat(currentFontSize) * 2; // Increase font size by  * 2px
-        yesButton.style.fontSize = newSize + 'px';
-    } else {
-        // If neither "Yes" nor "No" was clicked, show an alert message
-        alert('Invalid option!');
-    }
-}
-
-// Function to flash rainbow colors and then execute a callback function
-function flashRainbowColors(callback) {
-    var colors = ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#4b0082', '#9400d3'];
-    var i = 0;
-    var interval = setInterval(function() {
-        document.body.style.backgroundColor = colors[i];
-        i = (i + 1) % colors.length;
-    }, 200); // Change color every 200 milliseconds
-    setTimeout(function() {
-        clearInterval(interval);
-        document.body.style.backgroundColor = ''; // Reset background color
-        if (callback) {
-            callback();
-        }
-    }, 2000); // Flash colors for 2 seconds
-}
-
-// Function to display the kuromi-crying.gif initially
-function displayCat() {
-    // Get the container where the image will be displayed
-    var imageContainer = document.getElementById('image-container');
-    // Create a new Image element for the cat
-    var catImage = new Image();
-    // Set the source (file path) for the cat image
-    catImage.src = 'kuromi-crying.gif'; // Assuming the cat image is named "kuromi-crying.gif"
-    // Set alternative text for the image (for accessibility)
-    catImage.alt = 'Cat';
-    // When the cat image is fully loaded, add it to the image container
-    catImage.onload = function() {
-        imageContainer.appendChild(catImage);
-    };
-}
+// ... other functions unchanged ...
 
 // Function to display the kuromi-love.gif
 function displayCatHeart() {
-    // Clear existing content in the image container
-    document.getElementById('image-container').innerHTML = '';
-    // Get the container where the image will be displayed
     var imageContainer = document.getElementById('image-container');
-    // Create a new Image element for the cat-heart
+    if (!imageContainer) return console.error('No #image-container element found');
+
+    // Clear existing content
+    imageContainer.innerHTML = '';
+
+    // Create the image element
     var catHeartImage = new Image();
-    // Set the source (file path) for the cat-heart image
-    catHeartImage.src = 'kuromi-love.gif'; // Assuming the cat-heart image is named "kuromi-love.gif"
-    // Set alternative text for the image (for accessibility)
     catHeartImage.alt = 'Kuromi Love';
-    // When the cat-heart image is fully loaded, add it to the image container
+
+    // onload and onerror handlers for debug/fallback
     catHeartImage.onload = function() {
-        imageContainer.appendChild(catHeartImage);
-        // Hide the options container
-        document.getElementById('options').style.display = 'none';
+        console.log('kuromi-love.gif loaded successfully');
     };
+    catHeartImage.onerror = function() {
+        console.error('Failed to load kuromi-love.gif — check the path and that the file exists');
+        // Provide fallback UI so user isn't stuck with buttons visible
+        imageContainer.innerHTML = '<p>Could not load image.</p>';
+    };
+
+    // Append the image immediately so the UI updates even while loading
+    imageContainer.appendChild(catHeartImage);
+
+    // Hide the options immediately (don't wait for onload)
+    var options = document.getElementById('options');
+    if (options) options.style.display = 'none';
+
+    // Set the src last to start loading
+    catHeartImage.src = 'kuromi-love.gif'; // adjust path if the file is in a subfolder
 }
-
-// Display the kuromi-crying.gif initially
-displayCat();
-

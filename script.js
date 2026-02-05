@@ -4,19 +4,24 @@
 function selectOption(option) {
     // Check which option was clicked
     if (option === 'yes') {
-        // Flash rainbow colors
+        // Flash rainbow colors then display the heart image
         flashRainbowColors(function() {
-            document.getElementById('question').style.display = 'none'; // Hide the question
+            // don't hide the whole #question here (it might contain the image container)
+            // just show the heart image — displayCatHeart will hide the options after the image loads
+            console.log('Yes clicked — starting rainbow then showing heart image');
             displayCatHeart(); // Display the kuromi-love.gif
         });
     } else if (option === 'no') {
         // Change text on the "No" button to "You sure?"
-        document.getElementById('no-button').innerText = 'You sure?'; 
+        var noBtn = document.getElementById('no-button');
+        if (noBtn) noBtn.innerText = 'You sure?'; 
         // Increase font size of "Yes" button
         var yesButton = document.getElementById('yes-button');
-        var currentFontSize = window.getComputedStyle(yesButton).getPropertyValue('font-size');
-        var newSize = parseFloat(currentFontSize) * 2; // Increase font size by  * 2px
-        yesButton.style.fontSize = newSize + 'px';
+        if (yesButton) {
+            var currentFontSize = window.getComputedStyle(yesButton).getPropertyValue('font-size');
+            var newSize = parseFloat(currentFontSize) * 2; // double the font size
+            yesButton.style.fontSize = newSize + 'px';
+        }
     } else {
         // If neither "Yes" nor "No" was clicked, show an alert message
         alert('Invalid option!');
@@ -42,40 +47,47 @@ function flashRainbowColors(callback) {
 
 // Function to display the kuromi-crying.gif initially
 function displayCat() {
-    // Get the container where the image will be displayed
     var imageContainer = document.getElementById('image-container');
-    // Create a new Image element for the cat
+    if (!imageContainer) return;
     var catImage = new Image();
-    // Set the source (file path) for the cat image
-    catImage.src = 'kuromi-crying.gif'; // Assuming the cat image is named "kuromi-crying.gif"
-    // Set alternative text for the image (for accessibility)
+    catImage.src = 'kuromi-crying.gif';
     catImage.alt = 'Cat';
-    // When the cat image is fully loaded, add it to the image container
     catImage.onload = function() {
         imageContainer.appendChild(catImage);
+    };
+    catImage.onerror = function() {
+        console.error('Failed to load kuromi-crying.gif');
     };
 }
 
 // Function to display the kuromi-love.gif
 function displayCatHeart() {
-    // Clear existing content in the image container
-    document.getElementById('image-container').innerHTML = '';
-    // Get the container where the image will be displayed
     var imageContainer = document.getElementById('image-container');
+    if (!imageContainer) {
+        console.error('No #image-container element found');
+        return;
+    }
+    // Clear existing content in the image container
+    imageContainer.innerHTML = '';
     // Create a new Image element for the cat-heart
     var catHeartImage = new Image();
     // Set the source (file path) for the cat-heart image
-    catHeartImage.src = 'kuromi-love.gif'; // Assuming the cat-heart image is named "kuromi-love.gif"
-    // Set alternative text for the image (for accessibility)
+    catHeartImage.src = 'kuromi-love.gif'; // Check this filename and casing
     catHeartImage.alt = 'Kuromi Love';
     // When the cat-heart image is fully loaded, add it to the image container
     catHeartImage.onload = function() {
+        console.log('kuromi-love.gif loaded successfully');
         imageContainer.appendChild(catHeartImage);
-        // Hide the options container
-        document.getElementById('options').style.display = 'none';
+        // Hide the options container (after the image is visible)
+        var options = document.getElementById('options');
+        if (options) options.style.display = 'none';
+    };
+    catHeartImage.onerror = function(e) {
+        console.error('Failed to load kuromi-love.gif', e);
+        // show a visible error fallback so user knows it failed
+        imageContainer.innerHTML = '<p style="color:red">Could not load kuromi-love.gif — check the filename/path.</p>';
     };
 }
 
 // Display the kuromi-crying.gif initially
 displayCat();
-
